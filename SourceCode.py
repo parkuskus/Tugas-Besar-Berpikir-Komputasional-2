@@ -55,9 +55,6 @@ import sys
 from datetime import datetime
 
 #Subprogram
-def formatrupiah(rupiah):
-    return f"Rp {rupiah:,.0f}".replace(',', '.').replace(',', '.', 1)
-
 #Subprogram menampilkan menu
 def Menu(bahasa):
     if bahasa == 1: #Bahasa Indonesia
@@ -82,7 +79,38 @@ def Menu(bahasa):
         pilihan = int(input('Enter your desired menu: '))
         return pilihan
 
-def cek_Saldo(bahasa, saldo):
+def Menu_Kembali(bahasa,pilihan):
+    if bahasa == 1:
+        if pilihan == 1 or pilihan == 2 or pilihan == 5:
+            print('Lanjut Transaksi?')
+            print('1. Ya')
+            print('2. Tidak')
+            print('')
+            lanjut = int(input('Masukkan Respon Anda: '))
+            return lanjut
+
+        elif pilihan == 3 or pilihan == 4:
+            print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
+            print('')
+            status_transaksi = str(input('Konfirmasi (y/n): '))
+            return status_transaksi
+
+    elif bahasa == 2:
+        if pilihan == 1 or pilihan == 2 or pilihan == 3:
+            print('Continue Transaction?')
+            print('1. Yes')
+            print('2. No')
+            print('')
+            lanjut = int(input('Input Your Response Here: '))
+            return lanjut
+
+        elif pilihan == 3 or pilihan == 4:
+            print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
+            print('')
+            status_transaksi = str(input('Confirmation (y/n): '))
+            return status_transaksi
+
+def cek_Saldo(bahasa, saldo, pilihan):
     if bahasa == 1: #Bahasa Indonesia
         print('HARAP MENUNGGU')
         print('TRANSAKSI ANDA SEDANG DIPROSES')
@@ -95,10 +123,7 @@ def cek_Saldo(bahasa, saldo):
         print('')
             
         # Konfirmasi lanjut transaksi/tidak?
-        print('Lanjut Transaksi?')
-        print('1. Ya')
-        print('2. Tidak')
-        lanjut = int(input('Masukkan Respon Anda: '))
+        lanjut = Menu_Kembali(bahasa, pilihan)
         return lanjut
     
     elif bahasa == 2: #Bahasa Inggris
@@ -113,14 +138,13 @@ def cek_Saldo(bahasa, saldo):
         print('')
         
         # Konfirmasi lanjut transaksi/tidak?
-        print('Continue Transaction?')
-        print('1. Yes')
-        print('2. No')
-        lanjut = int(input('Input Your Response Here: '))
+        lanjut = Menu_Kembali(bahasa, pilihan)
         return lanjut  
 
 def tarik_Tunai(bahasa, saldo, tarik, nominal):
     if bahasa == 1:
+        receipt = 0
+        tunai = 0
         print('HARAP MENUNGGU')
         print('TRANSAKSI ANDA SEDANG DIPROSES')
         time.sleep(2)
@@ -128,18 +152,41 @@ def tarik_Tunai(bahasa, saldo, tarik, nominal):
         if saldo >= nominal[tarik]:
             saldo -= nominal[tarik]
             tunai = nominal[tarik]
-            print(f'Anda telah berhasil menarik Rp{formatrupiah(nominal[tarik])}')
+            print(f'Anda telah berhasil menarik Rp{nominal[tarik]:,}'.replace(',','.'))
             print(f'Sisa saldo di rekening anda adalah Rp{saldo:,}'.replace(',', '.'))
             print('Apakah anda ingin mencetak receipt?')
             print('1. Ya')
             print('2. Tidak')
             print('')
             receipt = int(input('Masukkan Respon Anda: '))
-            return receipt, tunai
+            return receipt, tunai, saldo
         else:
             print('SALDO TIDAK MENCUKUPI')
             print('')   
-
+            return receipt, tunai,saldo
+        
+    elif bahasa ==2:
+        receipt = 0
+        tunai = 0
+        print('PLEASE WAIT')
+        print('YOUR TRANSACTION IS BEING PROCESSED')
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear') 
+        if saldo >= nominal[tarik]:
+            saldo -= nominal[tarik]
+            tunai = nominal[tarik]
+            print(f'You have successfully withdrawed Rp{nominal[tarik]:,}'.replace(',','.'))
+            print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
+            print('Do you wish to print the receipt?')
+            print('1. Yes')
+            print('2. No')
+            receipt = int(input('Input Your Response Here: '))
+            return receipt, tunai, saldo
+        else:
+            print('BALANCE NOT ENOUGH')
+            print('')     
+            return receipt, tunai, saldo
+        
 #Fungsi Typing Effect di Terminal
 def typing_effect(text, delay=0.025):
     for char in text:
@@ -292,7 +339,7 @@ if (bahasa == 1) :
         
         # Menu informasi saldo       
         elif (pilihan == 1) :
-            lanjut = cek_Saldo(bahasa, saldo)
+            lanjut = cek_Saldo(bahasa, saldo, pilihan)
             if lanjut == 1:
                 pilihan = 0
             else:
@@ -315,7 +362,7 @@ if (bahasa == 1) :
             
             # Penarikan Tunai Cepat
             if tarik == 1 or tarik == 2 or tarik == 3 or tarik == 4:
-                receipt, tunai = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
+                receipt, tunai, saldo = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
                         
             # Mengambil selain pilihan sebelumnya (harus kelipatan 50.000, maks Rp1.250.000)         
             elif tarik == 5:
@@ -373,11 +420,7 @@ if (bahasa == 1) :
                 print('---------------------------------------------------')
                 
             # Ingin lanjut bertransaksi?
-            print('Lanjut Transaksi?')
-            print('1. Ya')
-            print('2. Tidak')
-            print('')
-            lanjut = int(input('Masukkan Respon Anda: '))
+            lanjut = Menu_Kembali(bahasa, pilihan)
             if lanjut == 1:
                 pilihan = 0
             else:
@@ -483,9 +526,8 @@ if (bahasa == 1) :
                     os.system('cls' if os.name == 'nt' else 'clear')   
 
                     print('TRANSAKSI TELAH SELESAI')
-                    print('PERLU TRANSAKSI YANG LAIN?')
-
-                    status_transaksi = str(input('Konfirmasi (y/n): '))
+                    
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                     else :
@@ -573,8 +615,7 @@ if (bahasa == 1) :
                     print('-------------SEBAGAI BUKTI PEMBAYARAN YANG SAH------------')
                     print('')
 
-                    print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
-                    status_transaksi = str(input('Konfirmasi (y/n): '))
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                     else :
@@ -583,9 +624,8 @@ if (bahasa == 1) :
                 # Kondisi ketika saldo tidak mencukupi
                 elif (proses_transaksi == 'y') and (saldo<total_isi_ulang) :
                     print('MOHON MAAF SALDO ANDA TIDAK MENCUKUPI')
-                    print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
-                    
-                    status_transaksi = str(input('Konfirmasi (y/n): '))
+
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -681,10 +721,8 @@ if (bahasa == 1) :
                         os.system('cls' if os.name == 'nt' else 'clear') 
                 else :
                     print('MOHON MAAF SALDO ANDA TIDAK MENCUKUPI')
-                    print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
-                    print('')
                     
-                    status_transaksi = str(input('Konfirmasi (y/n): '))
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -790,8 +828,7 @@ if (bahasa == 1) :
                     print('-----------------PDAM MENYATAKAN STRUK INI----------------')
                     print('-------------SEBAGAI BUKTI PEMBAYARAN YANG SAH------------')
                     print('')
-                    print('APAKAH ANDA INGIN MELANJUTKAN TRANSAKSI (y/n)?')
-                    lanjut_transaksi = str(input('Masukkan Respon Anda: '))
+                    lanjut_transaksi = Menu_Kembali(bahasa, pilihan)
 
                     if (lanjut_transaksi == 'y') :
                         pilihan = 0
@@ -801,9 +838,8 @@ if (bahasa == 1) :
                         os.system('cls' if os.name == 'nt' else 'clear') 
                 elif (konfirmasi_pembayaran == 'y') and (saldo<total_bayar) :
                     print('MOHON MAAF SALDO ANDA TIDAK MENCUKUPI')
-                    print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
-                    print('')
-                    status_transaksi = str(input('Konfirmasi (y/n): '))
+                    
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -835,10 +871,7 @@ if (bahasa == 1) :
                             print('')
                             
                             # Ingin lanjut bertransaksi?
-                            print('Lanjut Transaksi?')
-                            print('1. Ya')
-                            print('2. Tidak')
-                            lanjut = int(input('Masukkan Respon Anda: '))
+                            lanjut = Menu_Kembali(bahasa, pilihan)
                             if lanjut == 1:
                                 pilihan = 0
                             else:
@@ -953,6 +986,7 @@ elif(bahasa == 2):
 
         # Menu penarikan tunai 
         elif (pilihan == 2) :
+            Menu_Penarikan = [0, 50000, 200000, 500000, 1000000]
             print('FAST WITHDRAWAL MENU')
             print('PLEASE ENTER WITHDRAWAL AMOUNT')
             print('1. Rp    50.000')
@@ -964,83 +998,9 @@ elif(bahasa == 2):
             os.system('cls' if os.name == 'nt' else 'clear')
             
             # Penarikan Tunai Cepat
-            receipt = 0
+            if tarik == 1 or tarik == 2 or tarik == 3 or tarik == 4:
+                receipt, tunai, saldo = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
             
-            # Mengambil Rp50.000
-            if tarik == 1:
-                print('PLEASE WAIT')
-                print('YOUR TRANSACTION IS BEING PROCESSED')
-                time.sleep(2)
-                os.system('cls' if os.name == 'nt' else 'clear')       
-                if saldo >= 50000:
-                    saldo -= 50000
-                    tunai = 50000
-                    print('You have successfully withdrawed Rp50.000')
-                    print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
-                    print('Do you wish to print the receipt?')
-                    print('1. Yes')
-                    print('2. No')
-                    receipt = int(input('Input Your Response Here: '))
-                else:
-                    print('BALANCE NOT ENOUGH')
-                    print('')     
-
-            # Mengambil Rp200.000       
-            elif tarik == 2:
-                print('PLEASE WAIT')
-                print('YOUR TRANSACTION IS BEING PROCESSED')
-                time.sleep(2)
-                os.system('cls' if os.name == 'nt' else 'clear')   
-                if saldo >= 200000:
-                    saldo -= 200000
-                    tunai = 200000
-                    print('You have successfully withdrawed Rp200.000')
-                    print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
-                    print('Do you wish to print the receipt?')
-                    print('1. Yes')
-                    print('2. No')
-                    receipt = int(input('Input Your Response Here: '))
-                else:
-                    print('BALANCE NOT ENOUGH')
-                    print('')     
-
-            # Mengambil Rp500.000          
-            elif tarik == 3:
-                print('PLEASE WAIT')
-                print('YOUR TRANSACTION IS BEING PROCESSED')
-                time.sleep(2)
-                os.system('cls' if os.name == 'nt' else 'clear')   
-                if saldo >= 500000:
-                    saldo -= 500000
-                    tunai = 500000
-                    print('You have successfully withdrawed Rp500.000')
-                    print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
-                    print('Do you wish to print the receipt?')
-                    print('1. Yes')
-                    print('2. No')
-                    receipt = int(input('Input Your Response Here: '))
-                else:
-                    print('BALANCE NOT ENOUGH')
-                    print('')     
-
-            # Mengambil Rp1.000.000           
-            elif tarik == 4:
-                print('PLEASE WAIT')
-                print('YOUR TRANSACTION IS BEING PROCESSED')
-                time.sleep(2)
-                os.system('cls' if os.name == 'nt' else 'clear')   
-                if saldo >= 1000000:
-                    saldo -= 1000000
-                    tunai = 1000000
-                    print('You have successfully withdrawed Rp1.000.000')
-                    print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
-                    print('Do you wish to print the receipt?')
-                    print('1. Yes')
-                    print('2. No')
-                    receipt = int(input('Input Your Response Here: '))
-                else:
-                    print('BALANCE NOT ENOUGH')
-                    print('')     
             # Mengambil selain pilihan sebelumnya (harus kelipatan 50.000, maks Rp1.250.000)         
             elif tarik == 5:
                 status_tarik = False
@@ -1095,10 +1055,7 @@ elif(bahasa == 2):
                 print('---------------------------------------------------')
                 
             # Ingin lanjut bertransaksi?
-            print('Continue Transaction?')
-            print('1. Yes')
-            print('2. No')
-            lanjut = int(input('Input Your Response Here: '))
+            lanjut = Menu_Kembali(bahasa, pilihan)
             if lanjut == 1:
                 pilihan = 0
             else:
@@ -1291,9 +1248,8 @@ elif(bahasa == 2):
                     print('----------PROVIDER BERKOM DECLARES THIS RECEIPT-----------')
                     print('----------------AS VALID PROOF OF PURCHASE----------------')
                     print('')
-
-                    print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
-                    status_transaksi = str(input('Confirmation (y/n): '))
+                    
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                     else :
@@ -1302,9 +1258,8 @@ elif(bahasa == 2):
                 # Kondisi ketika saldo tidak mencukupi
                 elif (proses_transaksi == 'y') and (saldo<total_isi_ulang) :
                     print('SORRY YOUR BALANCE IS NOT ENOUGH')
-                    print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
                     
-                    status_transaksi = str(input('Confirmation (y/n): '))
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -1389,8 +1344,7 @@ elif(bahasa == 2):
                     print('----------------AS A VALID PROOF OF PURCHASE--------------')
                     print('')
 
-                    print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
-                    status_transaksi = str(input('Confirmation (y/n): '))
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -1399,10 +1353,8 @@ elif(bahasa == 2):
                         os.system('cls' if os.name == 'nt' else 'clear') 
                 else :
                     print('SORRY YOUR BALANCE IS NOT ENOUGH')
-                    print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
-                    print('')
                     
-                    status_transaksi = str(input('Konfirmasi (y/n): '))
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -1507,8 +1459,7 @@ elif(bahasa == 2):
                     print('-----------------PDAM DECLARES THIS RECEIPT----------------')
                     print('----------------AS A VALID PROOF OF PURCHASE---------------')
                     print('')
-                    print('DO YOU WISH TO MAKE OTHER TRANSACTIONS? (y/n)')
-                    lanjut_transaksi = str(input('Input Your Response Here: '))
+                    lanjut_transaksi = Menu_Kembali(bahasa, pilihan)
 
                     if (lanjut_transaksi == 'y') :
                         pilihan = 0
@@ -1518,9 +1469,8 @@ elif(bahasa == 2):
                         os.system('cls' if os.name == 'nt' else 'clear') 
                 elif (konfirmasi_pembayaran == 'y') and (saldo<total_bayar) :
                     print('SORRY YOUR BALANCE IS NOT ENOUGH')
-                    print('DO YOU WISH TO MAKE OTHER TRANSACTIONS? ')
-                    print('')
-                    status_transaksi = str(input('Confirmation (y/n): '))
+                
+                    status_transaksi = Menu_Kembali(bahasa, pilihan)
                     if (status_transaksi == 'y') :
                         pilihan = 0
                         os.system('cls' if os.name == 'nt' else 'clear') 
@@ -1552,10 +1502,7 @@ elif(bahasa == 2):
                             print('')
                             
                             # Ingin lanjut bertransaksi?
-                            print('Continue Transaction?')
-                            print('1. Yes')
-                            print('2. No')
-                            lanjut = int(input('Input Your Response Here: '))
+                            lanjut = Menu_Kembali(bahasa, pilihan)
                             if lanjut == 1:
                                 pilihan = 0
                             else:
