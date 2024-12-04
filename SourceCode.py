@@ -1,6 +1,6 @@
 ''' 
 Author              : Kelompok 9
-Tanggal Pengerjaan  : 3-10 November 2024
+Tanggal Pengerjaan  : 3 Desember 2024 - 15 Desember 2024
 
 PROGRAM ATM BANK TPB SUKSES 
 Deskripsi           : Simulasi ATM (Anjungan Tunai Mandiri / Automatic Teller Machine) bahasa Indonesia dan Inggris dengan fitur-fitur berupa
