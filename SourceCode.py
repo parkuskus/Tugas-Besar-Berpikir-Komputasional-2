@@ -1,6 +1,6 @@
 ''' 
 Author              : Kelompok 9
-Tanggal Pengerjaan  : 3 Desember 2024 - 15 Desember 2024
+Tanggal Pengerjaan  : 3-10 November 2024
 
 PROGRAM ATM BANK TPB SUKSES 
 Deskripsi           : Simulasi ATM (Anjungan Tunai Mandiri / Automatic Teller Machine) bahasa Indonesia dan Inggris dengan fitur-fitur berupa
@@ -56,7 +56,93 @@ from datetime import datetime
 
 #Subprogram
 #Subprogram menampilkan menu
+def pembuatan_akun():
+    #Menyambut pengguna
+    print('==================================')
+    print('SELAMAT DATANG DI BANK TPB SUKSES')
+    print('==================================')
+    time.sleep(2)
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+    # Membuat akun 
+    print('Silahkan masukkan data-data di bawah ini!')
+    nama_lengkap    = str(input('Nama Lengkap: '))
+    tanggal_lahir   = str(input('Tanggal Lahir (DD/MM/YYYY): '))
+
+    #Membuat PIN 
+    status_pin = False 
+    while (status_pin == False) :
+        pin = str(input('Silahkan buat PIN anda: '))
+        pin_konfirmasi = str(input(('Masukkan kembali PIN yang telah anda buat: '))) #Konfimasi PIN yang telah dibuat
+        if (pin == pin_konfirmasi) :
+            status_pin = True
+        else : #Alert jika PIN yang dikonfirmasi berbeda dengan PIN yang dibuat
+            time.sleep(2)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print('PIN yang anda masukkan belum sama. Silahkan masukkan kembali PIN anda')
+
+    #Mengisi saldo awal
+    os.system('cls' if os.name == 'nt' else 'clear')
+    saldo = int(input('Masukkan jumlah saldo awal (minimum 50.000): '))
+    while (saldo<50000) :
+        print('Mohon maaf, saldo awal yang anda masukkan belum mencukupi batas minimal')
+        saldo = int(input('Masukkan kembali saldo awal (minimum 50.000): '))
+
+    # Menampilkan kembali data-data yang sudah dimasukkan
+    os.system('cls' if os.name == 'nt' else 'clear')
+    typing_effect('Berikut adalah data-data pribadi anda!')
+    typing_effect(f'Nama Lengkap    : {nama_lengkap}')
+    typing_effect(f'Tanggal Lahir   : {tanggal_lahir}')
+    typing_effect(f'PIN             : {pin}')
+    typing_effect(f'Saldo Awal      : Rp{saldo:,}'.replace(',', '.'))
+    time.sleep(4)
+    return pin, saldo, nama_lengkap, tanggal_lahir
+
+def kartu_masuk():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("Silakan masukkan kartu Anda untuk memulai.")
+    input("Tekan Enter untuk memasukkan kartu...")
+
+    card = [
+                "|=============|",
+                "|             |",
+                "|             |",
+                "|    KARTU    |",
+                "|     ATM     |",
+                "|             |",
+                "|             |",
+                "|=============|"
+            ]
+
+    # Cetak kartu 
+    for i in range(len(card), 0, -1):
+        os.system('cls' if os.name == 'nt' else 'clear')  
+        for line in card[-i:]:
+            print(line)
+        time.sleep(0.2)
+        
+    os.system('cls' if os.name == 'nt' else 'clear')  
+    print("Kartu berhasil dimasukkan!")
+    time.sleep(2)
+
+    #Memilih Bahasa pada ATM
+    bahasa = pemilihan_bahasa()
+
+    return bahasa
+
+def pemilihan_bahasa():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print('PILIH BAHASA YANG ANDA INGIN GUNAKAN!')
+    print('1. Indonesia')
+    print('2. Inggris')
+    bahasa = int(input(('Pilih bahasa yang anda ingin gunakan!: ')))
+    return bahasa
+
+def pin_masuk():
+    return
+
 def Menu(bahasa):
+
     if bahasa == 1: #Bahasa Indonesia
         print('SILAHKAN PILIH MENU TRANSAKSI YANG ANDA INGINKAN')
         print('1. Informasi Saldo')
@@ -79,7 +165,7 @@ def Menu(bahasa):
         pilihan = int(input('Enter your desired menu: '))
         return pilihan
 
-def Menu_Kembali(bahasa,pilihan):
+def Menu_Kembali(bahasa, pilihan):
     if bahasa == 1:
         if pilihan == 1 or pilihan == 2 or pilihan == 5:
             print('Lanjut Transaksi?')
@@ -87,7 +173,12 @@ def Menu_Kembali(bahasa,pilihan):
             print('2. Tidak')
             print('')
             lanjut = int(input('Masukkan Respon Anda: '))
-            return lanjut
+            if lanjut == 1:
+                pilihan = 0
+            else:
+                pilihan = 10
+            os.system('cls' if os.name == 'nt' else 'clear') 
+            return pilihan
 
         elif pilihan == 3 or pilihan == 4:
             print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
@@ -96,19 +187,79 @@ def Menu_Kembali(bahasa,pilihan):
             return status_transaksi
 
     elif bahasa == 2:
-        if pilihan == 1 or pilihan == 2 or pilihan == 3:
+        if pilihan == 1 or pilihan == 2 or pilihan == 5:
             print('Continue Transaction?')
             print('1. Yes')
             print('2. No')
             print('')
             lanjut = int(input('Input Your Response Here: '))
-            return lanjut
+            if lanjut == 1:
+                pilihan = 0
+            else:
+                pilihan = 10
+            os.system('cls' if os.name == 'nt' else 'clear') 
+            return pilihan
 
         elif pilihan == 3 or pilihan == 4:
             print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
             print('')
             status_transaksi = str(input('Confirmation (y/n): '))
             return status_transaksi
+
+def receipt_konfirmasi(bahasa, saldo, tunai):
+    if bahasa == 1:
+        os.system('cls' if os.name == 'nt' else 'clear')  
+        print('HARAP MENUNGGU')
+        print('TRANSAKSI ANDA SEDANG DIPROSES')
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear')   
+        saldo -= tunai  
+        print(f'Anda telah berhasil menarik Rp {tunai:,}'.replace(',', '.'))
+        print(f'Sisa saldo di rekening anda adalah Rp {saldo:,}'.replace(',', '.'))
+        print('')
+        print('Apakah anda ingin mencetak receipt?')
+        print('1. Ya')
+        print('2. Tidak')
+        receipt = int(input())
+        os.system('cls' if os.name == 'nt' else 'clear') 
+        return saldo, receipt
+
+    elif bahasa == 2:
+        os.system('cls' if os.name == 'nt' else 'clear')  
+        print('PLEASE WAIT')
+        print('YOUR TRANSACTION IS BEING PROCESSED')
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear')   
+        saldo -= tunai  
+        print(f'You have successfully withdrawedt Rp {tunai:,}'.replace(',', '.'))
+        print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
+        print('Do you wish to print the receipt?')
+        print('1. Yes')
+        print('2. No')
+        receipt = int(input('Input Your Response Here: '))
+        os.system('cls' if os.name == 'nt' else 'clear') 
+        return saldo, receipt
+
+def receipt_cetak(bahasa, tunai, saldo):
+    if bahasa == 1:
+        waktu = datetime.now().isoformat(' ', 'seconds')
+        print('---------------------------------------------------')
+        print('TARIK TUNAI')
+        print(f'JUMLAH            : Rp{tunai:,}'.replace(',', '.'))
+        print(f'SISA SALDO        : Rp{saldo:,}'.replace(',', '.'))
+        print(f'WAKTU TRANSAKSI   : {waktu}')
+        print('---------------------------------------------------')
+        return
+
+    elif bahasa == 2:
+        waktu = datetime.now().isoformat(' ', 'seconds')
+        print('---------------------------------------------------')
+        print('CASH WITHDRAWAL')
+        print(f'TOTAL                  : Rp{tunai:,}'.replace(',', '.'))
+        print(f'REMAINING BALANCE      : Rp{saldo:,}'.replace(',', '.'))
+        print(f'TRANSACTION TIME       : {waktu}')
+        print('---------------------------------------------------')
+        return
 
 def cek_Saldo(bahasa, saldo, pilihan):
     if bahasa == 1: #Bahasa Indonesia
@@ -123,8 +274,8 @@ def cek_Saldo(bahasa, saldo, pilihan):
         print('')
             
         # Konfirmasi lanjut transaksi/tidak?
-        lanjut = Menu_Kembali(bahasa, pilihan)
-        return lanjut
+        pilihan = Menu_Kembali(bahasa, pilihan)
+        return pilihan
     
     elif bahasa == 2: #Bahasa Inggris
         print('PLEASE WAIT')
@@ -141,30 +292,114 @@ def cek_Saldo(bahasa, saldo, pilihan):
         lanjut = Menu_Kembali(bahasa, pilihan)
         return lanjut  
 
+def penarikan_tunai(bahasa, saldo, pilihan):
+    if bahasa == 1:
+        Menu_Penarikan = [0, 50000, 200000, 500000, 1000000] #Array nominal penarikan
+        tarik = tarik_pilih(bahasa)
+            
+        # Penarikan Tunai Cepat
+        if tarik == 1 or tarik == 2 or tarik == 3 or tarik == 4:
+            receipt, tunai, saldo = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
+                        
+    # Mengambil selain pilihan sebelumnya (harus kelipatan 50.000, maks Rp1.250.000)         
+        elif tarik == 5:
+            status_tarik = False
+            while status_tarik == False:   
+                tunai = tunai_5(bahasa)
+                status_tarik = tarik_konfirmasi(bahasa, tunai)
+
+            # Mencetak sisa saldo setelah tarik tunai
+            if status_tarik == True:
+                saldo, receipt = receipt_konfirmasi(bahasa, saldo, tunai)
+
+        # Mencetak receipt
+        if receipt == 1:
+            receipt_cetak(bahasa, tunai, saldo)
+                
+        # Ingin lanjut bertransaksi?
+        pilihan = Menu_Kembali(bahasa, pilihan)
+        return pilihan, saldo
+
+    elif bahasa == 2:
+        Menu_Penarikan = [0, 50000, 200000, 500000, 1000000]
+        tarik = tarik_pilih(bahasa)
+            
+        # Penarikan Tunai Cepat
+        if tarik == 1 or tarik == 2 or tarik == 3 or tarik == 4:
+            receipt, tunai, saldo = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
+            
+        # Mengambil selain pilihan sebelumnya (harus kelipatan 50.000, maks Rp1.250.000)         
+        elif tarik == 5:
+            status_tarik = False
+            while status_tarik == False:   
+                tunai = tunai_5(bahasa)
+                status_tarik = tarik_konfirmasi(bahasa, tunai)
+                
+                # Mencetak sisa saldo setelah tarik tunai
+                if status_tarik == True:
+                    saldo, receipt = receipt_konfirmasi(bahasa, saldo, tunai)
+
+        # Mencetak receipt
+        if receipt == 1:
+            receipt_cetak(bahasa, tunai, saldo)
+                
+        # Ingin lanjut bertransaksi?
+        pilihan = Menu_Kembali(bahasa, pilihan) 
+        return pilihan, saldo
+
+def tarik_pilih(bahasa):
+    if bahasa == 1:
+        print('MENU PENARIKAN CEPAT')
+        print('SILAKAN PILIH JUMLAH PENARIKAN')
+        print('1. Rp    50.000')
+        print('2. Rp   200.000')
+        print('3. Rp   500.000')
+        print('4. Rp 1.000.000')
+        print('5. JUMLAH LAIN')
+        print('')
+        tarik = int(input('Masukkan Respon Anda: '))
+        os.system('cls' if os.name == 'nt' else 'clear')
+        return tarik
+
+    elif bahasa == 2:
+        print('FAST WITHDRAWAL MENU')
+        print('PLEASE ENTER WITHDRAWAL AMOUNT')
+        print('1. Rp    50.000')
+        print('2. Rp   200.000')
+        print('3. Rp   500.000')
+        print('4. Rp 1.000.000')
+        print('5. OTHER AMOUNT')
+        tarik = int(input('Input Your Response Here: '))
+        os.system('cls' if os.name == 'nt' else 'clear')
+        return tarik
+
 def tarik_Tunai(bahasa, saldo, tarik, nominal):
     if bahasa == 1:
-        receipt = 0
-        tunai = 0
-        print('HARAP MENUNGGU')
-        print('TRANSAKSI ANDA SEDANG DIPROSES')
-        time.sleep(2)
-        os.system('cls' if os.name == 'nt' else 'clear')
-        if saldo >= nominal[tarik]:
-            saldo -= nominal[tarik]
-            tunai = nominal[tarik]
-            print(f'Anda telah berhasil menarik Rp{nominal[tarik]:,}'.replace(',','.'))
-            print(f'Sisa saldo di rekening anda adalah Rp{saldo:,}'.replace(',', '.'))
-            print('Apakah anda ingin mencetak receipt?')
-            print('1. Ya')
-            print('2. Tidak')
-            print('')
-            receipt = int(input('Masukkan Respon Anda: '))
-            return receipt, tunai, saldo
+        if tarik == 5:
+            return 
         else:
-            print('SALDO TIDAK MENCUKUPI')
-            print('')   
-            return receipt, tunai,saldo
-        
+            receipt = 0
+            tunai = 0
+            print('HARAP MENUNGGU')
+            print('TRANSAKSI ANDA SEDANG DIPROSES')
+            time.sleep(2)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            if saldo >= nominal[tarik]:
+                saldo -= nominal[tarik]
+                tunai = nominal[tarik]
+                print(f'Anda telah berhasil menarik Rp{nominal[tarik]:,}'.replace(',','.'))
+                print(f'Sisa saldo di rekening anda adalah Rp{saldo:,}'.replace(',', '.'))
+                print('Apakah anda ingin mencetak receipt?')
+                print('1. Ya')
+                print('2. Tidak')
+                print('')
+                receipt = int(input('Masukkan Respon Anda: '))
+                return receipt, tunai, saldo
+            else:
+                print('SALDO TIDAK MENCUKUPI')
+                print('')   
+                return receipt, tunai,saldo
+
     elif bahasa ==2:
         receipt = 0
         tunai = 0
@@ -186,7 +421,119 @@ def tarik_Tunai(bahasa, saldo, tarik, nominal):
             print('BALANCE NOT ENOUGH')
             print('')     
             return receipt, tunai, saldo
+
+def tunai_5(bahasa):
+    if bahasa == 1:
+        print('MASUKKAN JUMLAH PENARIKAN TUNAI YANG ANDA INGINKAN')
+        print('(DALAM KELIPATAN RP50.000)')
+        print('MAKSIMAL RP1.250.000')
+        tunai = int(input('JUMLAH PENARIKAN: '))
+        return tunai
+
+    elif bahasa == 2:
+        print('ENTER YOUR DESIRED CASH AMOUNT')
+        print('(MULTIPLE OF RP50.000)')
+        print('MAXIMAL RP1.250.000')
+        tunai = int(input('JUMLAH PENARIKAN: '))
+        return tunai
+
+def tarik_konfirmasi(bahasa, tunai):
+    if bahasa == 1:
+        if tunai < 50000:
+            print('NOMINAL YANG DIINPUT TIDAK MENCUKUPI')
+            print('')
+        elif tunai > 1250000:
+            print('NOMINAL YANG DIINPUT TERLALU BESAR')
+            print('')
+        elif tunai % 50000 != 0:
+            print('NOMINAL TIDAK VALID')
+            print('')
+        elif saldo < tunai:
+            print('SALDO TIDAK MENCUKUPI')
+            print('')
+        else: 
+            print(f'NOMINAL YANG ANDA INPUT ADALAH Rp{tunai:,}'.replace(',', '.'))
+            print('APAKAH ANDA YAKIN?')
+            print('')
+            konfirmasi_tarik = input('Konfirmasi (y/n): ')
+            if konfirmasi_tarik == 'y':
+                status_tarik = True
+
+        return status_tarik
+    
+    elif bahasa == 2:
+        if tunai < 50000:
+            print('AMOUNT TOO SMALL')
+            print('')
+        elif tunai > 1250000:
+            print('AMOUNT TOO LARGE')
+            print('')
+        elif tunai % 50000 != 0:
+            print('AMOUNT INVALID')
+            print('')
+        elif saldo < tunai:
+            print('BALANCE NOT ENOUGH')
+            print('')
+        else: 
+            print(f'THE AMOUNT YOU INPUTTED IS Rp{tunai:,}'.replace(',', '.'))
+            print('ARE YOU SURE?')
+            konfirmasi_tarik = input('Confirmation (y/n): ')
+            if konfirmasi_tarik == 'y':
+                status_tarik = True
         
+        return status_tarik
+                
+
+def ubah_pin(bahasa, pin, pilihan):
+    if bahasa == 1:
+        status_pin_masuk = False
+        while status_pin_masuk == False :
+            pin_masuk = str(input('Masukkan PIN anda: '))
+            if (pin_masuk == pin) :
+                status_pin_masuk = True
+                status_pin = False 
+                while (status_pin == False) :
+                    pin = str(input('Masukkan PIN baru anda: '))
+                    pin_konfirmasi = str(input('Konfirmasikan kembali PIN anda: '))
+                    if (pin == pin_konfirmasi) :
+                        os.system('cls' if os.name == 'nt' else 'clear')   
+                        status_pin = True
+                        print('PIN berhasil diubah!')
+                        print('')
+                            
+                        # Ingin lanjut bertransaksi?
+                        pilihan = Menu_Kembali(bahasa, pilihan)
+                        return pin, pilihan
+                    else :
+                        print('PIN tidak sesuai!')
+            else :
+                print('PIN anda salah')
+    
+    elif bahasa == 2:
+        status_pin_masuk = False
+        while status_pin_masuk == False :
+            pin_masuk = str(input('Enter your PIN: '))
+            if (pin_masuk == pin) :
+                status_pin_masuk = True
+                status_pin = False 
+                while (status_pin == False) :
+                    pin = str(input('Enter your new PIN: '))
+                    pin_konfirmasi = str(input('Please confirm your new PIN: '))
+                    if (pin == pin_konfirmasi) :
+                        os.system('cls' if os.name == 'nt' else 'clear')   
+                        status_pin = True
+                        print('PIN changed successfully!')
+                        print('')
+                            
+                        # Ingin lanjut bertransaksi?  
+                        pilihan = Menu_Kembali(bahasa, pilihan)  
+                        return pin, pilihan                 
+                    else :
+                        print('Wrong PIN entered!')
+            else :
+                print('Wrong PIN entered')
+                    
+                    
 #Fungsi Typing Effect di Terminal
 def typing_effect(text, delay=0.025):
     for char in text:
@@ -195,80 +542,13 @@ def typing_effect(text, delay=0.025):
         time.sleep(delay)
     print()  # Move to the next line after typing is done
 
-#Menyambut pengguna
-print('==================================')
-print('SELAMAT DATANG DI BANK TPB SUKSES')
-print('==================================')
-time.sleep(2)
-os.system('cls' if os.name == 'nt' else 'clear')
-
-# Membuat akun 
-print('Silahkan masukkan data-data di bawah ini!')
-nama_lengkap    = str(input('Nama Lengkap: '))
-tanggal_lahir   = str(input('Tanggal Lahir (DD/MM/YYYY): '))
-
-#Membuat PIN 
-status_pin = False 
-while (status_pin == False) :
-    pin = str(input('Silahkan buat PIN anda: '))
-    pin_konfirmasi = str(input(('Masukkan kembali PIN yang telah anda buat: '))) #Konfimasi PIN yang telah dibuat
-    if (pin == pin_konfirmasi) :
-        status_pin = True
-    else : #Alert jika PIN yang dikonfirmasi berbeda dengan PIN yang dibuat
-        time.sleep(2)
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print('PIN yang anda masukkan belum sama. Silahkan masukkan kembali PIN anda')
-
-#Mengisi saldo awal
-os.system('cls' if os.name == 'nt' else 'clear')
-saldo = int(input('Masukkan jumlah saldo awal (minimum 50.000): '))
-while (saldo<50000) :
-    print('Mohon maaf, saldo awal yang anda masukkan belum mencukupi batas minimal')
-    saldo = int(input('Masukkan kembali saldo awal (minimum 50.000): '))
-
-# Menampilkan kembali data-data yang sudah dimasukkan
-os.system('cls' if os.name == 'nt' else 'clear')
-typing_effect('Berikut adalah data-data pribadi anda!')
-typing_effect(f'Nama Lengkap    : {nama_lengkap}')
-typing_effect(f'Tanggal Lahir   : {tanggal_lahir}')
-typing_effect(f'PIN             : {pin}')
-typing_effect(f'Saldo Awal      : Rp{saldo:,}'.replace(',', '.'))
-time.sleep(4)
+#Algoritma Utama
+#Pembuatan Akun yang memberikan output pin, saldo
+pin, saldo, nama_lengkap, tanggal_lahir = pembuatan_akun()
 
 # TAHAP ATM
 # Memasukkan Kartu
-os.system('cls' if os.name == 'nt' else 'clear')
-print("Silakan masukkan kartu Anda untuk memulai.")
-input("Tekan Enter untuk memasukkan kartu...")
-
-card = [
-            "|=============|",
-            "|             |",
-            "|             |",
-            "|    KARTU    |",
-            "|     ATM     |",
-            "|             |",
-            "|             |",
-            "|=============|"
-        ]
-
-# Cetak kartu 
-for i in range(len(card), 0, -1):
-    os.system('cls' if os.name == 'nt' else 'clear')  
-    for line in card[-i:]:
-        print(line)
-    time.sleep(0.2)
-    
-os.system('cls' if os.name == 'nt' else 'clear')  
-print("Kartu berhasil dimasukkan!")
-time.sleep(2)
-
-#Memilih Bahasa pada ATM
-os.system('cls' if os.name == 'nt' else 'clear')
-print('PILIH BAHASA YANG ANDA INGIN GUNAKAN!')
-print('1. Indonesia')
-print('2. Inggris')
-bahasa = int(input(('Pilih bahasa yang anda ingin gunakan!: ')))
+bahasa = kartu_masuk()
 
 # ATM Bahasa Indonesia
 if (bahasa == 1) :
@@ -339,93 +619,11 @@ if (bahasa == 1) :
         
         # Menu informasi saldo       
         elif (pilihan == 1) :
-            lanjut = cek_Saldo(bahasa, saldo, pilihan)
-            if lanjut == 1:
-                pilihan = 0
-            else:
-                pilihan = 10
-            os.system('cls' if os.name == 'nt' else 'clear')   
+            pilihan = cek_Saldo(bahasa, saldo, pilihan)   
 
         # Menu penarikan tunai 
         elif (pilihan == 2) :
-            Menu_Penarikan = [0, 50000, 200000, 500000, 1000000] #Array nominal penarikan
-            print('MENU PENARIKAN CEPAT')
-            print('SILAKAN PILIH JUMLAH PENARIKAN')
-            print('1. Rp    50.000')
-            print('2. Rp   200.000')
-            print('3. Rp   500.000')
-            print('4. Rp 1.000.000')
-            print('5. JUMLAH LAIN')
-            print('')
-            tarik = int(input('Masukkan Respon Anda: '))
-            os.system('cls' if os.name == 'nt' else 'clear')
-            
-            # Penarikan Tunai Cepat
-            if tarik == 1 or tarik == 2 or tarik == 3 or tarik == 4:
-                receipt, tunai, saldo = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
-                        
-            # Mengambil selain pilihan sebelumnya (harus kelipatan 50.000, maks Rp1.250.000)         
-            elif tarik == 5:
-                status_tarik = False
-                while status_tarik == False:   
-                    print('MASUKKAN JUMLAH PENARIKAN TUNAI YANG ANDA INGINKAN')
-                    print('(DALAM KELIPATAN RP50.000)')
-                    print('MAKSIMAL RP1.250.000')
-                    tunai = int(input('JUMLAH PENARIKAN: '))
-                    if tunai < 50000:
-                        print('NOMINAL YANG DIINPUT TIDAK MENCUKUPI')
-                        print('')
-                    elif tunai > 1250000:
-                        print('NOMINAL YANG DIINPUT TERLALU BESAR')
-                        print('')
-                    elif tunai % 50000 != 0:
-                        print('NOMINAL TIDAK VALID')
-                        print('')
-                    elif saldo < tunai:
-                        print('SALDO TIDAK MENCUKUPI')
-                        print('')
-                    else: 
-                        print(f'NOMINAL YANG ANDA INPUT ADALAH Rp{tunai:,}'.replace(',', '.'))
-                        print('APAKAH ANDA YAKIN?')
-                        print('')
-                        konfirmasi_tarik = input('Konfirmasi (y/n): ')
-                        if konfirmasi_tarik == 'y':
-                            status_tarik = True
-                
-                # Mencetak sisa saldo setelah tarik tunai
-                if status_tarik == True:
-                    os.system('cls' if os.name == 'nt' else 'clear')  
-                    print('HARAP MENUNGGU')
-                    print('TRANSAKSI ANDA SEDANG DIPROSES')
-                    time.sleep(2)
-                    os.system('cls' if os.name == 'nt' else 'clear')   
-                    saldo -= tunai  
-                    print(f'Anda telah berhasil menarik Rp {tunai:,}'.replace(',', '.'))
-                    print(f'Sisa saldo di rekening anda adalah Rp {saldo:,}'.replace(',', '.'))
-                    print('')
-                    print('Apakah anda ingin mencetak receipt?')
-                    print('1. Ya')
-                    print('2. Tidak')
-                    receipt = int(input())
-                    os.system('cls' if os.name == 'nt' else 'clear')  
-
-            # Mencetak receipt
-            if receipt == 1:
-                waktu = datetime.now().isoformat(' ', 'seconds')
-                print('---------------------------------------------------')
-                print('TARIK TUNAI')
-                print(f'JUMLAH            : Rp{tunai:,}'.replace(',', '.'))
-                print(f'SISA SALDO        : Rp{saldo:,}'.replace(',', '.'))
-                print(f'WAKTU TRANSAKSI   : {waktu}')
-                print('---------------------------------------------------')
-                
-            # Ingin lanjut bertransaksi?
-            lanjut = Menu_Kembali(bahasa, pilihan)
-            if lanjut == 1:
-                pilihan = 0
-            else:
-                pilihan = 10
-            os.system('cls' if os.name == 'nt' else 'clear')   
+            pilihan, saldo = penarikan_tunai(bahasa, saldo, pilihan)
             
         # Menu transfer
         elif (pilihan == 3) :
@@ -855,33 +1053,8 @@ if (bahasa == 1) :
 
         # Mengubah PIN
         elif (pilihan == 5) :
-            status_pin_masuk = False
-            while status_pin_masuk == False :
-                pin_masuk = str(input('Masukkan PIN anda: '))
-                if (pin_masuk == pin) :
-                    status_pin_masuk = True
-                    status_pin = False 
-                    while (status_pin == False) :
-                        pin = str(input('Masukkan PIN baru anda: '))
-                        pin_konfirmasi = str(input('Konfirmasikan kembali PIN anda: '))
-                        if (pin == pin_konfirmasi) :
-                            os.system('cls' if os.name == 'nt' else 'clear')   
-                            status_pin = True
-                            print('PIN berhasil diubah!')
-                            print('')
-                            
-                            # Ingin lanjut bertransaksi?
-                            lanjut = Menu_Kembali(bahasa, pilihan)
-                            if lanjut == 1:
-                                pilihan = 0
-                            else:
-                                pilihan = 10
-                            os.system('cls' if os.name == 'nt' else 'clear')                               
-                        else :
-                            print('PIN tidak sesuai!')
-                else :
-                    print('PIN anda salah')
-                    
+            pin, pilihan = ubah_pin(bahasa, pin, pilihan)
+            
     # Keluar dari ATM
     print('Silakan Ambil Kartu Anda')
     print('')
@@ -977,90 +1150,11 @@ elif(bahasa == 2):
                 
         # Menu informasi saldo       
         elif (pilihan == 1) :
-            lanjut = cek_Saldo(bahasa, saldo)
-            if lanjut == 1:
-                pilihan = 0
-            else:
-                pilihan = 10
-            os.system('cls' if os.name == 'nt' else 'clear')   
+            pilihan = cek_Saldo(bahasa, saldo, pilihan)
 
         # Menu penarikan tunai 
         elif (pilihan == 2) :
-            Menu_Penarikan = [0, 50000, 200000, 500000, 1000000]
-            print('FAST WITHDRAWAL MENU')
-            print('PLEASE ENTER WITHDRAWAL AMOUNT')
-            print('1. Rp    50.000')
-            print('2. Rp   200.000')
-            print('3. Rp   500.000')
-            print('4. Rp 1.000.000')
-            print('5. OTHER AMOUNT')
-            tarik = int(input('Input Your Response Here: '))
-            os.system('cls' if os.name == 'nt' else 'clear')
-            
-            # Penarikan Tunai Cepat
-            if tarik == 1 or tarik == 2 or tarik == 3 or tarik == 4:
-                receipt, tunai, saldo = tarik_Tunai(bahasa, saldo, tarik, Menu_Penarikan)
-            
-            # Mengambil selain pilihan sebelumnya (harus kelipatan 50.000, maks Rp1.250.000)         
-            elif tarik == 5:
-                status_tarik = False
-                while status_tarik == False:   
-                    print('ENTER YOUR DESIRED CASH AMOUNT')
-                    print('(MULTIPLE OF RP50.000)')
-                    print('MAXIMAL RP1.250.000')
-                    tunai = int(input('JUMLAH PENARIKAN: '))
-                    if tunai < 50000:
-                        print('AMOUNT TOO SMALL')
-                        print('')
-                    elif tunai > 1250000:
-                        print('AMOUNT TOO LARGE')
-                        print('')
-                    elif tunai % 50000 != 0:
-                        print('AMOUNT INVALID')
-                        print('')
-                    elif saldo < tunai:
-                        print('BALANCE NOT ENOUGH')
-                        print('')
-                    else: 
-                        print(f'THE AMOUNT YOU INPUTTED IS Rp{tunai:,}'.replace(',', '.'))
-                        print('ARE YOU SURE?')
-                        konfirmasi_tarik = input('Confirmation (y/n): ')
-                        if konfirmasi_tarik == 'y':
-                            status_tarik = True
-                
-                # Mencetak sisa saldo setelah tarik tunai
-                if status_tarik == True:
-                    os.system('cls' if os.name == 'nt' else 'clear')  
-                    print('PLEASE WAIT')
-                    print('YOUR TRANSACTION IS BEING PROCESSED')
-                    time.sleep(2)
-                    os.system('cls' if os.name == 'nt' else 'clear')   
-                    saldo -= tunai  
-                    print(f'You have successfully withdrawedt Rp {tunai:,}'.replace(',', '.'))
-                    print(f'Your remaining account balance is Rp{saldo:,}'.replace(',', '.'))
-                    print('Do you wish to print the receipt?')
-                    print('1. Yes')
-                    print('2. No')
-                    receipt = int(input('Input Your Response Here: '))
-                    os.system('cls' if os.name == 'nt' else 'clear')  
-
-            # Mencetak receipt
-            if receipt == 1:
-                waktu = datetime.now().isoformat(' ', 'seconds')
-                print('---------------------------------------------------')
-                print('CASH WITHDRAWAL')
-                print(f'TOTAL                  : Rp{tunai:,}'.replace(',', '.'))
-                print(f'REMAINING BALANCE      : Rp{saldo:,}'.replace(',', '.'))
-                print(f'TRANSACTION TIME       : {waktu}')
-                print('---------------------------------------------------')
-                
-            # Ingin lanjut bertransaksi?
-            lanjut = Menu_Kembali(bahasa, pilihan)
-            if lanjut == 1:
-                pilihan = 0
-            else:
-                pilihan = 10
-            os.system('cls' if os.name == 'nt' else 'clear')   
+            pilihan, saldo = penarikan_tunai(bahasa, saldo, pilihan) 
             
         # Menu transfer
         elif (pilihan == 3) :
@@ -1485,34 +1579,9 @@ elif(bahasa == 2):
                     pilihan = 0
 
         # Mengubah PIN
-        elif (pilihan == 5) :
-            status_pin_masuk = False
-            while status_pin_masuk == False :
-                pin_masuk = str(input('Enter your PIN: '))
-                if (pin_masuk == pin) :
-                    status_pin_masuk = True
-                    status_pin = False 
-                    while (status_pin == False) :
-                        pin = str(input('Enter your new PIN: '))
-                        pin_konfirmasi = str(input('Please confirm your new PIN: '))
-                        if (pin == pin_konfirmasi) :
-                            os.system('cls' if os.name == 'nt' else 'clear')   
-                            status_pin = True
-                            print('PIN changed successfully!')
-                            print('')
-                            
-                            # Ingin lanjut bertransaksi?
-                            lanjut = Menu_Kembali(bahasa, pilihan)
-                            if lanjut == 1:
-                                pilihan = 0
-                            else:
-                                pilihan = 10
-                            os.system('cls' if os.name == 'nt' else 'clear')                               
-                        else :
-                            print('Wrong PIN entered!')
-                else :
-                    print('Wrong PIN entered')
-                    
+        elif (pilihan == 5):
+            pin, pilihan = ubah_pin(bahasa, pin, pilihan)
+
     # Keluar dari ATM
     print('Please Take Your Card')
     print('')
