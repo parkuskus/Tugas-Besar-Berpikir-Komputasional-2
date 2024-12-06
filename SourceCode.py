@@ -1485,6 +1485,34 @@ def typing_effect(text, delay=0.025):
         time.sleep(delay)
     print()  # Move to the next line after typing is done
 
+def kartu_keluar():
+    print('Silakan Ambil Kartu Anda')
+    print('')
+    time.sleep(0.3)
+    card = [
+                "|=============|",
+                "|             |",
+                "|             |",
+                "|    KARTU    |",
+                "|     ATM     |",
+                "|             |",
+                "|             |",
+                "|=============|"
+            ]
+    
+    # Cetak kartu 
+    for i in range(len(card)):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        # Cetak bagian bawah kartu bertahap hingga ke atas
+        for line in card[-(i+1):]:
+            print(line)
+        time.sleep(0.2)
+
+    print('')
+    print('Terima Kasih telah menggunakan ATM BANK TPB SUKSES')
+    time.sleep(3)
+    return
+
 #ALGORITMA UTAMA
 #Pembuatan Akun yang memberikan output pin, saldo
 pin, saldo, nama_lengkap, tanggal_lahir = pembuatan_akun()
@@ -1493,7 +1521,7 @@ pin, saldo, nama_lengkap, tanggal_lahir = pembuatan_akun()
 # Memasukkan Kartu
 bahasa = kartu_masuk()
 
-# ATM Bahasa Indonesia
+# ATM
 if (bahasa == 1) or (bahasa == 2) :
     # Memasukkan dan Mengecek PIN yang dimasukkan
     pin = pin_masuk(bahasa, pin)
@@ -1532,29 +1560,5 @@ if (bahasa == 1) or (bahasa == 2) :
             pin, pilihan = ubah_pin(bahasa, pin, pilihan)
             
     # Keluar dari ATM
-    print('Silakan Ambil Kartu Anda')
-    print('')
-    time.sleep(0.3)
-    card = [
-                "|=============|",
-                "|             |",
-                "|             |",
-                "|    KARTU    |",
-                "|     ATM     |",
-                "|             |",
-                "|             |",
-                "|=============|"
-            ]
-    
-    # Cetak kartu 
-    for i in range(len(card)):
-        os.system('cls' if os.name == 'nt' else 'clear')
-        # Cetak bagian bawah kartu bertahap hingga ke atas
-        for line in card[-(i+1):]:
-            print(line)
-        time.sleep(0.2)
-
-    print('')
-    print('Terima Kasih telah menggunakan ATM BANK TPB SUKSES')
-    time.sleep(3)
+    kartu_keluar()
 
