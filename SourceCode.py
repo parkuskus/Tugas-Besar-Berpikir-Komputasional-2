@@ -34,7 +34,7 @@ status_transfer                 = menyimpan pilihan pengguna apakah ingin melaku
 pilih_pembayaran                = menyimpan pilihan menu pembayaran yang ingin digunakan oleh pengguna
 nomor_hp                        = menyimpan nomor telepon genggam dari pengguna
 daftar_pembelian                = menyimpan nomor nomimal voucher pulsa yang dapat dipilih oleh pengguna
-nominal_isi_ulang               = menyimpan nominal isi ualng yang dipilih oleh pengguna
+nominal_isi_ulang               = menyimpan nominal isi ulang yang dipilih oleh pengguna
 admin_bank                      = menyimpan nomimal admin bank 
 total_isi_ulang                 = menyimpan isi total biaya isi ulang pulsa yang harus dibayar pengguna
 proses_transaksi                = menyimpan konfirmasi permintaan pengguna untuk membeli pulsa prabayar
@@ -46,6 +46,10 @@ nomor_pelanggan                 = menyimpan nomor PAM/Air pelanggan
 tagihan                         = menyimpan tagihan yang dimiliki oleh pengguna
 total_bayar                     = menyimpan total tagihan PAM yang dimiliki oleh pengguna
 konfirmasi_pembayaran           = menyimpan pilihan pengguna apakah ingin melakukan pembayaran PAM atau tidak
+lembar_50k                        = menyimpan jumlah lembaran 50 ribu yang ingin disetor
+lembar_100k                       = menyimpan jumlah lembaran 100 ribu yang ingin disetor
+setoran                         = menyimpan total uang yang akan disetor
+konfirmasi_setor                = menyimpan pilihan pengguna apakah ingin melakukan setoran atau tidak
 
 '''
 import os
@@ -260,7 +264,8 @@ def Menu(bahasa):
         print('3. Transfer')
         print('4. Pembayaran')
         print('5. Ganti PIN')
-        print('6. Selesai Transaksi')
+        print('6. Setor Tunai')
+        print('7. Selesai Transaksi')
         pilihan = int(input('Masukkan menu yang anda inginkan: '))
         return pilihan
     
@@ -271,7 +276,8 @@ def Menu(bahasa):
         print('3. Transfer')
         print('4. Payment')
         print('5. Change PIN')
-        print('6. Finish Transaction')            
+        print('6. Cash Deposit')
+        print('7. Finish Transaction')            
         pilihan = int(input('Enter your desired menu: '))
         return pilihan
 
@@ -291,7 +297,7 @@ def Menu_Kembali(bahasa, pilihan):
             os.system('cls' if os.name == 'nt' else 'clear') 
             return pilihan
 
-        elif pilihan == 3 or pilihan == 4:
+        elif pilihan == 3 or pilihan == 4 or pilihan == 6:
             print('APAKAH ANDA MAU MELAKUKAN TRANSAKSI LAIN?')
             print('')
             status_transaksi = str(input('Konfirmasi (y/n): '))
@@ -315,7 +321,7 @@ def Menu_Kembali(bahasa, pilihan):
             os.system('cls' if os.name == 'nt' else 'clear') 
             return pilihan
 
-        elif pilihan == 3 or pilihan == 4:
+        elif pilihan == 3 or pilihan == 4 or pilihan == 6:
             print('DO YOU WISH TO MAKE ANOTHER TRANSACTION?')
             print('')
             status_transaksi = str(input('Confirmation (y/n): '))
@@ -1476,6 +1482,132 @@ def ubah_pin(bahasa, pin, pilihan):
             else :
                 print('Wrong PIN entered')
                     
+def setor_tunai(bahasa,saldo,pilihan):
+    if bahasa == 1:
+        print('SETORAN TUNAI BANK TPB SUKSES')
+        print('')
+        print('SILAKAN MASUKKAN UANG YANG AKAN DISETOR')
+        print('NOMINAL YANG DITERIMA')
+        print('    - 50.000         ')
+        print('    -100.000         ')
+        print('')
+        print('MOHON PERHATIAN UNTUK:')
+        print('- MEMASTIKAN DENOMINASI UANG')
+        print('- MERAPIKAN UANG ANDA')
+        print('')
+        lembar_50k = int(input('Masukkan jumlah lembaran Rp 50.000 yang akan disetor: '))
+        lembar_100k = int(input('Masukkan jumlah lembaran Rp 100.000 yang akan disetor: '))
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print('HARAP MENUNGGU')
+        print('TRANSAKSI ANDA SEDANG DIPROSES')
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print('SETORAN TUNAI BANK TPB SUKSES')
+        print('')
+        if lembar_50k == 0 and lembar_100k == 0:
+            print('Anda akan dikembalikan ke menu utama')
+            time.sleep(2)
+            return 0, saldo
+        if lembar_50k > 0:
+            print(f' 50000 X {lembar_50k}   = {50000 * lembar_50k}')
+        if lembar_100k > 0:
+            print(f'100000 X {lembar_100k}   = {100000 * lembar_100k}')
+        setoran = 50000 * lembar_50k + 100000 * lembar_100k
+        print(f'TOTAL        = {setoran}')
+        print('')
+        print('Konfirmasi Setor')
+        print('1. Setor')
+        print('2. Batal')
+        konfirmasi_setoran = int(input())
+        os.system('cls' if os.name == 'nt' else 'clear')
+        
+        if konfirmasi_setoran == 1:
+            print('HARAP MENUNGGU')
+            print('TRANSAKSI ANDA SEDANG DIPROSES')
+            time.sleep(2)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            waktu = datetime.now().isoformat(' ', 'seconds')
+            saldo += setoran
+            print('---------------------------------------------------')
+            print('SETORAN TUNAI BANK TPB SUKSES')
+            print(f'Nama                 : {nama_lengkap}')
+            print(f'TOTAL                : {setoran:,}'.replace(',', '.')) 
+            print(f'Saldo Rekening Baru  : {saldo:,}'.replace(',', '.')) 
+            print(f'Waktu Transaksi      : {waktu}') 
+            print('---------------------------------------------------')
+            print('')
+            pilihan = Menu_Kembali(bahasa, pilihan)
+                        
+        else:
+            print('Transaksi Dibatalkan')
+            print('Silakan Ambil Kembali Uang Tunai Anda')
+            print('')
+            time.sleep(2)
+            pilihan = Menu_Kembali(bahasa, pilihan)
+        
+    elif bahasa == 2:
+        print('BANK TPB SUKSES CASH DEPOSIT')
+        print('')
+        print('PLEASE INSERT THE CASH TO BE DEPOSITED')
+        print('ACCEPTED CASH DENOMINATIONS')
+        print('    - 50.000         ')
+        print('    -100.000         ')
+        print('')
+        print('PLEASE ENSURE TO:')
+        print('- CONFIRM THE CASH DENOMINATIONS')
+        print('- ARRANGE YOUR CASH PROPERLY')
+        print('')
+        lembar_50k = int(input('Enter the number of Rp 50.000 bills to be deposited: '))
+        lembar_100k = int(input('Enter the number of Rp 100.000 bills to be deposited: '))
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print('PLEASE WAIT')
+        print('YOUR TRANSACTION IS BEING PROCESSED')
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print('BANK TPB SUKSES CASH DEPOSIT')
+        print('')
+        if lembar_50k == 0 and lembar_100k == 0:
+            print('You will be returned to the main menu')
+            time.sleep(2)
+            return 0, saldo
+        if lembar_50k > 0:
+            print(f' 50000 X {lembar_50k}   = {50000 * lembar_50k}')
+        if lembar_100k > 0:
+            print(f'100000 X {lembar_100k}   = {100000 * lembar_100k}')
+        setoran = 50000 * lembar_50k + 100000 * lembar_100k
+        print(f'TOTAL        = {setoran}')
+        print('')
+        print('Deposit Confirmation')
+        print('1. Deposit')
+        print('2. Cancel')
+        konfirmasi_setoran = int(input())
+        os.system('cls' if os.name == 'nt' else 'clear')
+        
+        if konfirmasi_setoran == 1:
+            print('PLEASE WAIT')
+            print('YOUR TRANSACTION IS BEING PROCESSED')
+            time.sleep(2)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            waktu = datetime.now().isoformat(' ', 'seconds')
+            saldo += setoran
+            print('---------------------------------------------------')
+            print('BANK TPB SUKSES CASH DEPOSIT')
+            print(f'Name                 : {nama_lengkap}')
+            print(f'TOTAL                : {setoran:,}'.replace(',', '.')) 
+            print(f'New Account Balance  : {saldo:,}'.replace(',', '.')) 
+            print(f'Transaction Time     : {waktu}') 
+            print('---------------------------------------------------')
+            print('')
+            pilihan = Menu_Kembali(bahasa, pilihan)
+            
+        else:
+            print('Transaction Cancelled')
+            print('Please Take Back Your Cash')
+            print('')
+            time.sleep(2)
+            pilihan = Menu_Kembali(bahasa, pilihan)
+
+    return pilihan, saldo
                     
 #Fungsi Typing Effect di Terminal
 def typing_effect(text, delay=0.025):
@@ -1533,7 +1665,7 @@ if (bahasa == 1) or (bahasa == 2) :
     os.system('cls' if os.name == 'nt' else 'clear')     
 
     # Masuk ke menu-menu yang disediakan 
-    while ((pilihan == 0) or (pilihan == 1) or (pilihan == 2) or (pilihan == 3) or (pilihan == 4) or (pilihan == 5)):
+    while ((pilihan == 0) or (pilihan == 1) or (pilihan == 2) or (pilihan == 3) or (pilihan == 4) or (pilihan == 5) or (pilihan == 6)):
         if (pilihan == 0) :
             os.system('cls' if os.name == 'nt' else 'clear')   
             pilihan = Menu(bahasa)
@@ -1558,6 +1690,10 @@ if (bahasa == 1) or (bahasa == 2) :
         # Mengubah PIN
         elif (pilihan == 5) :
             pin, pilihan = ubah_pin(bahasa, pin, pilihan)
+            
+        # Setor tunai
+        elif (pilihan == 6):
+            pilihan, saldo = setor_tunai(bahasa,saldo,pilihan)
             
     # Keluar dari ATM
     kartu_keluar()
