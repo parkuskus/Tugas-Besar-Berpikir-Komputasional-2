@@ -503,7 +503,7 @@ def tarik_pilih(bahasa):
         os.system('cls' if os.name == 'nt' else 'clear')
         return tarik
 
-#
+#Fungsi untuk menarik tunai selain pilihan yang tersedia
 def tarik_Tunai(bahasa, saldo, tarik, nominal):
     if bahasa == 1:
         receipt = 0
